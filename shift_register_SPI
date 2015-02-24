@@ -1,0 +1,39 @@
+/* shift_register_SPI
+ *
+ * Demo of the 74HC595, Arduino SPI and arrays
+ * by: Jeffrey E. Hundstad <we0a@arrl.net> 2015-02-23
+ */
+
+#include <SPI.h>
+
+/* PINS */
+const byte reservedPin = 10; // UNO must use 10 - MISO, unused
+const byte dataPin = 11; // UNO must use 11 - MOSI, 74HC595-Pin-14 SER (serial data)
+const byte clockPin = 13; // UNO must use 13 - CLK, 74HC595-Pin-11 SRCLK (serial clock)
+const byte latchPin = 7; // 74HC595-Pin-12 RCLK (register latch)
+// 74HC595-Pin-8 GND
+// 74HC595-Pin-16 VCC
+// 74HC595-Pin-13 OE (Output Enable, LOW to enable)
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(latchPin, OUTPUT);
+  digitalWrite(latchPin, LOW);
+  SPI.begin();
+  digitalWrite(latchPin, HIGH);
+}
+
+const byte animation[] = {0b00000001,
+                          0b00000010,
+                          0b00000100
+                         };
+
+
+void loop() {
+  for (byte sequence = 0; sequence < 3; sequence++) {
+    digitalWrite(latchPin, LOW);
+    SPI.transfer(animation[sequence]);
+    digitalWrite(latchPin, HIGH);
+    delay(500);
+  }
+}
